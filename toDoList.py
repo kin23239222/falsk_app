@@ -138,6 +138,4 @@ def done():
     return render_template('done.html',tasks_by_date=tasks_by_date)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  
     app.run(debug=True)
