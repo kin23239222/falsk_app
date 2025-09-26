@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}
+    已完成
+{% endblock %}
+
+{% block content %}
+    <div class="row my-3">
+        <div class="accordion accordion-flush" id="accordionTasks">
+            {% for date, tasks in tasks_by_date.items() %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ loop.index }}"
+                                aria-expanded="false"
+                                aria-controls="collapse{{ loop.index }}">
+                            {{ date }} <span class="mx-2 small text-muted">({{ tasks|length }} 个任务)</span>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse"
+                         aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordionTasks">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled">
+                                {% if tasks|length == 0 %}
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                                        <h1 class="h1 text-success">没有已完成的任务</h1>
+                                    </div>
+                                {% endif %}
+                                {% for task in tasks %}
+                                    {% if task.done %}
+                                        <li class="d-flex my-1">
+                                            <div style="width: 22px;">
+                                                <input class="me-1" type="checkbox" onchange="done_true(this)"
+                                                       value="{{ task.id }}"
+                                                       {% if task.done %}checked{% endif %}>
+                                            </div>
+                                            <div style="flex: 1;word-break: break-word">
+                                                {{ task.name }}
+                                                <small class="text-muted ms-2">{{ task.date }}</small>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function done_true(done) {
+            let task = done.value;
+            fetch('/udel_li', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({taskId: task})
+            }).then(respone => respone.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        done.closest('li').remove()
+                    } else {
+                        alert(data.message)
+                    }
+                })
+        }
+    </script>
+{% endblock %}

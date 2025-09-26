@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}默认标题{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+    <style>
+        #clj a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+        }
+
+        #clj a:hover {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<!--主容器-->
+<div class="container">
+    <h2 class="text-center text-primary my-4">我的任务清单</h2>
+
+    {# 导航栏 #}
+    <div class="row mt-3">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'to_do_list' %} active {% endif %}" aria-current="page"
+                   href="{{ url_for('to_do_list') }}">首页</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link  {% if request.endpoint == 'done' %}active{% endif %}" href="{{ url_for('done') }}">已完成</a>
+            </li>
+    </div>
+    {% block content %}
+    {% endblock %}
+
+</div>
+{% block scripts %}{% endblock %}
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+
+
+
+
+</html>

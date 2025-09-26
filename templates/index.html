@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}任务清单{% endblock %}
+{% block content %}
+    <!-- 内容区 -->
+    <div class="row mt-3">
+        <!-- 输入增加任务 -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="input-group">
+					<textarea id="taskInput" class="form-control" placeholder="请输入任务..." rows="3"
+                              style="resize: none;"></textarea>
+                    <button class="btn btn-success ms-1" onclick="addTask()">添加</button>
+                </div>
+            </div>
+        </div>
+        <!-- 列表 -->
+        <div class="row my-2">
+            <div class="col-12">
+
+                <!-- 提示任务完成 -->
+                <div id="emptyMsg" class="d-none justify-content-center align-items-center"
+                     style="height: 50vh; ">
+                    <h1 class="h1 text-success">任务都完成啦</h1>
+                </div>
+
+                {# 显示任务 #}
+                <ul class="list-unstyled" id="taskList">
+                    {% for task in tasks %}
+                        {% if not task.done %}
+                            <li class="d-flex align-items-start my-1">
+                                <div style="width: 22px; flex-shrink: 0">
+                                    <input class="me-1" type="checkbox" onchange="del(this)" value="{{ task.id }}"
+                                           {% if task.done %}checked{% endif %}/>
+                                </div>
+                                <div style="flex: 1; word-break: break-word;">
+                                    {{ task.name }}
+                                    <small class="text-muted ms-2">{{ task.date }}</small>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // 文本的显示隐藏
+        function toggleEmptyMsg(){
+            const ul = document.getElementById('taskList')
+            const emptyMsg  = document.getElementById('emptyMsg')
+            // 统计li元素
+            const itmes = ul.querySelectorAll('li')
+
+            if (itmes.length === 0){
+                emptyMsg.classList.remove('d-none')
+                emptyMsg.classList.add('d-flex')
+            }else {
+                emptyMsg.classList.remove('d-flex')
+                emptyMsg.classList.add('d-none')
+            }
+        }
+
+        // 完成任务
+        function del(checkbox) {
+            let task = checkbox.value;
+            fetch('/del_li', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({taskId: task})
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        checkbox.closest('li').remove();
+                        toggleEmptyMsg()
+                    } else {
+                        alert('删除失败');
+                    }
+                });
+        }
+
+        // 增加任务
+        function addTask() {
+            let input = document.getElementById('taskInput')
+            let task = input.value.trim()
+            if (task === "") {
+                alert('内容为空');
+                input.value = ''
+                return
+            }
+
+            fetch('/add_li', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({task: task})
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        let ul = document.getElementById('taskList')
+                        let li = document.createElement('li')
+                        li.className = 'd-flex align-items-start my-1'
+                        li.innerHTML = `<div style="width: 22px; flex-shrink: 0">
+                                    <input class="me-2" type="checkbox" onchange="del(this)" value="${data.task.id}" />
+                                </div>
+                                <div style="flex: 1; word-break: break-word;">
+                                    ${data.task.name}
+                                    <small class="text-muted ms-2">${data.task.date}</small>
+                                </div>`
+                        ul.appendChild(li)
+                        input.value = ''
+                        toggleEmptyMsg()
+                    } else {
+                        alert(data.message)
+                    }
+                })
+        }
+         // 页面加载完成后立即执行一次
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleEmptyMsg();
+        });
+    </script>
+{% endblock %}
