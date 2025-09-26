@@ -1,1 +1,1 @@
-web: gunicorn toDoList:app
+gunicorn --config gunicorn.conf.py toDoList:app
