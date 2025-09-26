@@ -43,9 +43,7 @@ if os.environ.get("FLASK_ENV") == "development":
 # SQLAlchemy PostgreSQL URI
 # 优先用环境变量 DATABASE_URL（Render 上会配置）
 # 本地开发可以 fallback 到 SQLite（可选）
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    "DATABASE_URL", "sqlite:///local.db"
-)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
