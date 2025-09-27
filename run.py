@@ -13,7 +13,7 @@ from app import create_app
 
 
 # 创建 Flask app 实例
-app = create_app()
+app = create_app("DevConfig")
 
 if __name__ == "__main__":
     app.run(

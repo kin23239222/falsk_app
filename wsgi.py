@@ -12,7 +12,7 @@ from app import create_app
 """
 
 # 创建 Flask app 实例
-app = create_app()
+app = create_app("ProdConfig")
 
 # 可选：运行调试模式（生产环境通常不要）
 if __name__ == "__main__":
