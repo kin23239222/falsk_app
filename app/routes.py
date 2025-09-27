@@ -1,63 +1,21 @@
 import gc
 import os
 from collections import defaultdict
-from datetime import datetime
-
+from .models import Task, db
+from flask import current_app as app  # 获取当前 app 实例
 import psutil
-from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.pool import NullPool  # 新增导入
+from flask import  render_template, request, jsonify
 
-app = Flask(__name__)
-if os.environ.get("FLASK_ENV") == "development":
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.jinja_env.auto_reload = True
+"""
+作用：
+定义 Flask URL 路由和处理函数（增删改查逻辑）。
+渲染模板，处理前端请求。
 
-# # 配置 MySQL 数据库连接
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/flask?charset=utf8mb4'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 避免警告
-# db = SQLAlchemy(app)
+特点：
+只关注业务逻辑，不处理数据库连接初始化。
+可以引用 models.py 和 extensions.py。
+"""
 
-# class Task(db.Model):
-#     __tablename__ = 'flask_list'  # 已存在的表
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     name = db.Column(db.String(250), nullable=False)
-#     done = db.Column(db.Boolean, default=False)  # tinyint -> Boolean
-#     date = db.Column(db.DateTime, default= datetime.utcnow)
-#
-#     # 将数据转为字典类型
-#     def to_dict(self):
-#         return {'id': self.id,'name':self.name,'done':self.done,'date':self.date.strftime('%Y-%m-%d %H:%M')}
-#
-#     def __repr__(self):
-#         return f'<Task {self.name}, done={self.done}>'
-
-
-# -----------------------------
-# 配置 Supabase PostgreSQL 数据库
-# -----------------------------
-# 替换为你自己的 Supabase Host
-# DB_HOST = "db.icckmzphswnptfhnichd.supabase.co"
-# DB_PORT = "5432"
-# DB_NAME = "flask"
-# DB_USER = "postgres"
-# DB_PASSWORD = "123456"
-
-# SQLAlchemy PostgreSQL URI
-# 优先用环境变量 DATABASE_URL（Render 上会配置）
-# 本地开发可以 fallback 到 SQLite（可选）
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    "DATABASE_URL", "sqlite:///local.db"
-)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# 新增：配置连接池选项（关键修复）
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'poolclass': NullPool,  # 禁用SQLAlchemy连接池，避免与Supabase冲突
-    'pool_pre_ping': True,   # 连接前ping检测
-}
-
-db = SQLAlchemy(app)
 
 # 新增：简单内存检查函数
 def check_memory():
@@ -70,26 +28,6 @@ def check_memory():
                 gc.collect()
         except:
             pass  # 忽略内存检查错误
-
-
-# -----------------------------
-# 定义模型
-# -----------------------------
-class Task(db.Model):
-    __tablename__ = 'flask_list'  # 已存在的表
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(250), nullable=False)
-    done = db.Column(db.Boolean, default=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def to_dict(self):
-        return {'id': self.id, 'name': self.name, 'done': self.done,
-                'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None}
-
-    def __repr__(self):
-        return f'<Task {self.name}, done={self.done}>'
-
-
 
 # 首页：任务列表 - 只添加内存检查
 @app.route('/')
@@ -173,6 +111,3 @@ def health_check():
         return 'OK'
     except:
         return 'Database Error', 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
