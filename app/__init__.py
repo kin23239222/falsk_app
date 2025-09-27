@@ -16,17 +16,14 @@ from .extensions import db, migrate
 """
 
 
-def create_app():
+def create_app(config_name="DevConfig"):
     app = Flask(__name__)
 
-    # 从系统环境变量读取当前环境，默认为开发环境
-    env = os.getenv("FLASK_ENV", "development")
-    if env == "production":
-        # 生产环境配置
-        app.config.from_object("config.ProdConfig")
-    else:
-        # 开发环境配置
-        app.config.from_object("config.DevConfig")
+
+
+    # 选择环境配置
+    app.config.from_object(f"config.{config_name}")
+
 
     # 初始化数据库和迁移工具
     db.init_app(app)
