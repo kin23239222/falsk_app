@@ -17,6 +17,13 @@
         #clj a:hover {
             background-color: #ffffff;
         }
+        .container{
+            background-image: url("{{ url_for('static',filename='images/bj.jpg') }}");
+            background-size: cover; {# 图片铺满容器 #}
+            background-position: center;    {# 居中显示 #}
+            background-repeat: no-repeat; {# 不平铺 #}
+            min-height: 100vh; {# 保证高度撑满页面 #}
+        }
     </style>
 </head>
 <body>
@@ -34,6 +41,7 @@
             <li class="nav-item">
                 <a class="nav-link  {% if request.endpoint == 'done' %}active{% endif %}" href="{{ url_for('done') }}">已完成</a>
             </li>
+        </ul>
     </div>
     {% block content %}
     {% endblock %}
