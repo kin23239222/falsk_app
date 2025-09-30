@@ -3,16 +3,42 @@
 {% block content %}
     <!-- 内容区 -->
     <div class="row mt-3">
-        <!-- 输入增加任务 -->
-        <div class="row mb-2">
-            <div class="col-12">
-                <div class="input-group">
-					<textarea id="taskInput" class="form-control" placeholder="请输入任务..." rows="3"
-                              style="resize: none;"></textarea>
-                    <button class="btn btn-success ms-1" onclick="addTask()">添加</button>
+        <!-- 添加任务按钮 -->
+        <button type="button" class="col-2 mx-2 btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">
+            添加任务
+        </button>
+
+        <!-- Modal 弹窗 -->
+        <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="taskModalLabel">添加新任务</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭" onclick="off()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="taskForm">
+                            <!-- 任务输入 -->
+                            <div class="mb-3">
+                                <label for="taskInput" class="form-label">任务内容</label>
+                                <textarea id="taskInput" class="form-control" placeholder="请输入任务..." rows="3"
+                                          style="resize:none;"></textarea>
+                            </div>
+                            <!-- 通知时间 -->
+                            <div class="mb-3">
+                                <label for="taskTime" class="form-label">通知时间</label>
+                                <input type="datetime-local" id="taskTime" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="off()">取消</button>
+                        <button type="button" class="btn btn-success" onclick="addTask()">保存</button>
+                    </div>
                 </div>
             </div>
         </div>
+
         <!-- 列表 -->
         <div class="row my-2">
             <div class="col-12">
@@ -22,8 +48,7 @@
                      style="height: 50vh; ">
                     <h1 class="h1 text-success">任务都完成啦</h1>
                 </div>
-
-                {# 显示任务 #}
+                 {#显示任务#}
                 <ul class="list-unstyled" id="taskList">
                     {% for task in tasks %}
                         {% if not task.done %}
@@ -34,7 +59,8 @@
                                 </div>
                                 <div style="flex: 1; word-break: break-word;">
                                     {{ task.name }}
-                                    <small class="text-muted ms-2">{{ task.date }}</small>
+                                    <small class="text-info ms-2">{{ task.date }}</small>
+                                    <small class="text-success ms-2">通知时间:{{ task.date_inform }}</small>
                                 </div>
                             </li>
                         {% endif %}
@@ -48,16 +74,16 @@
 {% block scripts %}
     <script>
         // 文本的显示隐藏
-        function toggleEmptyMsg(){
+        function toggleEmptyMsg() {
             const ul = document.getElementById('taskList')
-            const emptyMsg  = document.getElementById('emptyMsg')
+            const emptyMsg = document.getElementById('emptyMsg')
             // 统计li元素
             const itmes = ul.querySelectorAll('li')
 
-            if (itmes.length === 0){
+            if (itmes.length === 0) {
                 emptyMsg.classList.remove('d-none')
                 emptyMsg.classList.add('d-flex')
-            }else {
+            } else {
                 emptyMsg.classList.remove('d-flex')
                 emptyMsg.classList.add('d-none')
             }
@@ -83,18 +109,21 @@
 
         // 增加任务
         function addTask() {
-            let input = document.getElementById('taskInput')
-            let task = input.value.trim()
-            if (task === "") {
-                alert('内容为空');
-                input.value = ''
+            let taskInput = document.getElementById('taskInput').value.trim()
+            let taskTime = document.getElementById('taskTime').value
+            if (taskInput === "") {
+                alert('任务内容不可为空');
+                return
+            }
+            if (taskTime === "") {
+                alert('通知时间不可为空')
                 return
             }
 
             fetch('/add_li', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({task: task})
+                body: JSON.stringify({taskInput: taskInput, taskTime: taskTime})
             }).then(response => response.json())
                 .then(data => {
                     if (data.status === 'ok') {
@@ -106,7 +135,8 @@
                                 </div>
                                 <div style="flex: 1; word-break: break-word;">
                                     ${data.task.name}
-                                    <small class="text-muted ms-2">${data.task.date}</small>
+                                    <small class="text-info ms-2">${data.task.date}</small>
+                                    <small class="text-success ms-2">通知时间:${ data.task.date_inform }</small>
                                 </div>`
                         ul.appendChild(li)
                         input.value = ''
@@ -115,9 +145,21 @@
                         alert(data.message)
                     }
                 })
+            // 关闭 modal
+            var modal = bootstrap.Modal.getInstance(document.getElementById('taskModal'));
+            modal.hide();
+
+            // 清空输入
+            document.getElementById("taskForm").reset();
         }
-         // 页面加载完成后立即执行一次
-        document.addEventListener('DOMContentLoaded', function() {
+
+        // 添加任务(取消按钮)
+        function off(){
+            document.getElementById("taskForm").reset();
+        }
+
+        // 页面加载完成后立即执行一次
+        document.addEventListener('DOMContentLoaded', function () {
             toggleEmptyMsg();
         });
     </script>

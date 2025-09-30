@@ -73,15 +73,18 @@ def udel_li():
 def add_li():
     check_memory()  # 新增
     try:
-        task_name = request.json.get('task')
-        if not task_name:
+        taskInput = request.json.get('taskInput')
+        taskTime = request.json.get('taskTime')
+        if not taskInput:
+            return jsonify({'status': 'error', 'message': '任务名不能为空'}), 400
+        if not taskTime:
             return jsonify({'status': 'error', 'message': '任务名不能为空'}), 400
 
-        existing = Task.query.filter_by(name=task_name, done=False).first()
+        existing = Task.query.filter_by(name=taskInput, done=False, date_inform=taskTime).first()
         if existing:
             return jsonify({'status': 'error', 'message': '任务已存在'}), 400
 
-        new_task = Task(name=task_name, done=False)
+        new_task = Task(name=taskInput, done=False, date_inform=taskTime)
         db.session.add(new_task)
         db.session.commit()
         return jsonify({'status': 'ok', 'task': new_task.to_dict()})

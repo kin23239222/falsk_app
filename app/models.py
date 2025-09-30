@@ -21,10 +21,13 @@ class Task(db.Model):
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    date_inform = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
-                'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None}
+                'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None,
+                'date_inform': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None
+                }
 
     def __repr__(self):
         return f'<Task {self.name}, done={self.done}>'

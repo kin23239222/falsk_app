@@ -19,11 +19,9 @@ from .extensions import db, migrate
 def create_app(config_name="DevConfig"):
     app = Flask(__name__)
 
-
-
     # 选择环境配置
     app.config.from_object(f"config.{config_name}")
-
+    print("当前数据库:", app.config["SQLALCHEMY_DATABASE_URI"])
 
     # 初始化数据库和迁移工具
     db.init_app(app)
