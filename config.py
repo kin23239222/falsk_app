@@ -49,7 +49,7 @@ class ProdConfig(Config):
     # 优先使用环境变量 DATABASE_URL，否则用默认本地 MySQL
     # 格式: "mysql+pymysql://用户名:密码@主机/数据库名"
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", "sqlite:///local.db"
+        "DATABASE_URL", "postgresql://postgres.icckmzphswnptfhnichd:12345sdsdawvvweg@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres"
     )
     TEMPLATES_AUTO_RELOAD = False  # 开发环境模板自动刷新
     # 新增：配置连接池选项（关键修复）
