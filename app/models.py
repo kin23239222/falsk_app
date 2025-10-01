@@ -24,7 +24,7 @@ class Task(db.Model):
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
-    date_inform = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(pytz.UTC))
+    date_inform = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
