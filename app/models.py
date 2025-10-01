@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 
@@ -19,12 +19,20 @@ from sqlalchemy import Column, DateTime
 # 定义模型
 # -----------------------------
 class Task(db.Model):
+    def beijing_now(self):
+        """
+        转化为北京时间
+        :return:
+        """
+        return datetime.utcnow() + timedelta(hours=8)
+
     __tablename__ = 'flask_list'  # 已存在的表
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-    date_inform = db.Column(db.DateTime, default=datetime.utcnow)
+    tz = pytz.timezone('Asia/Shanghai')
+    date = db.Column(db.DateTime, default=beijing_now)
+    date_inform = db.Column(db.DateTime, default=beijing_now)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
@@ -34,3 +42,4 @@ class Task(db.Model):
 
     def __repr__(self):
         return f'<Task {self.name}, done={self.done}>'
+
