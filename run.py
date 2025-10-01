@@ -1,5 +1,6 @@
 # run.py
 from app import create_app
+from app.informTask import init_scheduler
 
 """
 作用：
@@ -14,6 +15,7 @@ from app import create_app
 
 # 创建 Flask app 实例
 app = create_app("DevConfig")
+init_scheduler(app)
 
 if __name__ == "__main__":
     app.run(

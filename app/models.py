@@ -34,7 +34,7 @@ class Task(db.Model):
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, default=beijing_now)
-    date_inform = db.Column(db.DateTime, default=beijing_now)
+    date_inform = db.Column(db.DateTime(timezone=True), default=beijing_now)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
