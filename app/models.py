@@ -15,29 +15,31 @@ from sqlalchemy import Column, DateTime
 配合 Flask-Migrate 实现数据库迁移。
 """
 
+
+def beijing_now():
+    """
+    转化为北京时间
+    :return:
+    """
+    return datetime.utcnow() + timedelta(hours=8)
+
 # -----------------------------
 # 定义模型
 # -----------------------------
 class Task(db.Model):
-    def beijing_now(self):
-        """
-        转化为北京时间
-        :return:
-        """
-        return datetime.utcnow() + timedelta(hours=8)
+
 
     __tablename__ = 'flask_list'  # 已存在的表
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
-    tz = pytz.timezone('Asia/Shanghai')
     date = db.Column(db.DateTime, default=beijing_now)
-    date_inform = db.Column(db.DateTime, default=None)
+    date_inform = db.Column(db.DateTime, default=beijing_now)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
                 'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None,
-                'date_inform': self.date.strftime('%Y-%m-%d %H:%M') if self.date_inform else None
+                'date_inform': self.date_inform.strftime('%Y-%m-%d %H:%M') if self.date_inform else None
                 }
 
     def __repr__(self):
