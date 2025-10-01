@@ -1,5 +1,6 @@
 # wsgi.py
 from app import create_app
+from app.informTask import scheduler
 
 """
 作用：
@@ -13,6 +14,8 @@ from app import create_app
 
 # 创建 Flask app 实例
 app = create_app("ProdConfig")
+# 启用任务通知调度
+scheduler.start()
 
 # 可选：运行调试模式（生产环境通常不要）
 if __name__ == "__main__":
