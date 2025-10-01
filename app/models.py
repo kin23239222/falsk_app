@@ -32,7 +32,7 @@ class Task(db.Model):
     done = db.Column(db.Boolean, default=False)
     tz = pytz.timezone('Asia/Shanghai')
     date = db.Column(db.DateTime, default=beijing_now)
-    date_inform = db.Column(db.DateTime, default=beijing_now)
+    date_inform = db.Column(db.DateTime, default=None)
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
