@@ -11,7 +11,8 @@ def check_tasks():
     当任务到时间时进行通知
     :return:
     """
-    now = datetime.now(pytz.UTC)  # 或者用你的时区
+    tz = pytz.timezone('Asia/Shanghai')
+    now = datetime.now(tz)  # 或者用你的时区
     tasks = Task.query.filter(Task.done == False, Task.date_inform <= now).all()
     for task in tasks:
         send_tg_message(f"任务提醒：{task.name}")
