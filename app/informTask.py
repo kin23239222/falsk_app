@@ -12,12 +12,12 @@ def check_tasks():
     :return:
     """
     now = datetime.now(pytz.UTC)  # 或者用你的时区
-    tasks = Task.query.filter(Task.date_inform <= now).all()
+    tasks = Task.query.filter(Task.done == False, Task.date_inform <= now).all()
     for task in tasks:
         send_tg_message(f"任务提醒：{task.name}")
         # 如果只提醒一次，可以更新数据库避免重复提醒
-        db.session.delete(task)  # 或者加个标记字段
-        db.session.commit()
+        task.done = True  # 或者加个标记字段
+    db.session.commit()
 
 # 创建调度器
 scheduler = BackgroundScheduler()
