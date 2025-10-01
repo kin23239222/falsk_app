@@ -1,7 +1,7 @@
 from datetime import datetime
 from .models import Task,db
 import pytz as pytz
-from utiles import send_tg_message
+from .utiles import send_tg_message
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
