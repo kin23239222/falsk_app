@@ -33,11 +33,12 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
+    inform = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, default=beijing_now)
     date_inform = db.Column(db.DateTime(timezone=True), default=beijing_now)
 
     def to_dict(self):
-        return {'id': self.id, 'name': self.name, 'done': self.done,
+        return {'id': self.id, 'name': self.name, 'done': self.done,'inform': self.inform,
                 'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None,
                 'date_inform': self.date_inform.strftime('%Y-%m-%d %H:%M') if self.date_inform else None
                 }

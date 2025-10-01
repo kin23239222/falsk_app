@@ -15,14 +15,13 @@ def check_tasks(app):
     with app.app_context():
         tz = pytz.timezone('Asia/Shanghai')
         now = datetime.now(tz)  # 或者用你的时区
-        print(f"时间{now}")
-        tasks = Task.query.filter_by(done=False).all()
+        tasks = Task.query.filter(Task.done == False, Task.inform == False).all()
         for task in tasks:
             if task.date_inform is not None:
                 task_time = tz.localize(task.date_inform) if task.date_inform.tzinfo is None else task.date_inform
                 if task_time <= now:
                     send_tg_message(f"任务提醒：{task.name}")
-                    task.done = True
+                    task.inform = True
         db.session.commit()
 
 
