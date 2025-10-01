@@ -1,6 +1,9 @@
 from datetime import datetime
-from . import db  # 相对导入，获取在 __init__.py 中初始化的 SQLAlchemy 实例
 
+import pytz
+
+from . import db  # 相对导入，获取在 __init__.py 中初始化的 SQLAlchemy 实例
+from sqlalchemy import Column, DateTime
 
 """
 作用：
@@ -21,12 +24,12 @@ class Task(db.Model):
     name = db.Column(db.String(250), nullable=False)
     done = db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
-    date_inform = db.Column(db.DateTime, default=datetime.utcnow)
+    date_inform = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(pytz.UTC))
 
     def to_dict(self):
         return {'id': self.id, 'name': self.name, 'done': self.done,
                 'date': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None,
-                'date_inform': self.date.strftime('%Y-%m-%d %H:%M') if self.date else None
+                'date_inform': self.date.strftime('%Y-%m-%d %H:%M') if self.date_inform else None
                 }
 
     def __repr__(self):
