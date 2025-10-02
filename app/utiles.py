@@ -9,7 +9,7 @@ from email.header import Header
 BOT_TOKEN = "7502031135:AAFiUxRD-N7sj4rGYBVCIadZsg0btLqRwLQ"
 CHAT_ID = "6360891094"
 
-# 网易授权码
+# 网易邮箱授权码
 WY_MAIl_PASS = "EP6YSMbtqHN3ZdAh"
 WY_mail_host = "smtp.163.com"
 WY_mail_user = "18476776602@163.com"
