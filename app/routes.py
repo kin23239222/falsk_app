@@ -80,7 +80,7 @@ def add_li():
         if not taskTime:
             return jsonify({'status': 'error', 'message': '任务名不能为空'}), 400
 
-        existing = Task.query.filter_by(name=taskInput, done=False, date_inform=taskTime).first()
+        existing = Task.query.filter_by(name=taskInput, done=False).first()
         if existing:
             return jsonify({'status': 'error', 'message': '任务已存在'}), 400
 
