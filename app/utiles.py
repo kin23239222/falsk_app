@@ -1,3 +1,5 @@
+from email.utils import formataddr
+
 import requests
 import smtplib
 from email.mime.text import MIMEText
@@ -23,7 +25,7 @@ def send_tg_message(text: str):
     requests.post(url, data=payload)
 
 
-def wy_mail_send(text: str,content=""):
+def wy_mail_send(text: str, content="任务提醒"):
     """
     向网易邮箱发送通知
     :param text: 发送标题
@@ -32,11 +34,11 @@ def wy_mail_send(text: str,content=""):
     """
     # ---------- 构造邮件 ----------
     # MIMEText：邮件正文，"plain" 表示纯文本，"utf-8" 保证中文不会乱码
-    message = MIMEText(content, "plain", "utf-8")
+    message = MIMEText(text, "plain", "utf-8")
     # 发件人信息（显示在邮件客户端中“发件人”字段）
-    message["From"] = Header("任务提醒机器人", "utf-8")
+    message["From"] = formataddr(("任务提醒机器人", WY_mail_user))
     # 收件人信息（显示在邮件客户端中“收件人”字段）
-    message["To"] = Header("18476776602@163.com", "utf-8")
+    message["To"] = formataddr(("18476776602@163.com", "utf-8"))
     # 邮件标题
     message["Subject"] = Header(text, "utf-8")
 
