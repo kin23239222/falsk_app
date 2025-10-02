@@ -1,15 +1,13 @@
 import requests
 
-# 机器人ID、聊天窗口ID
-BOT_TOKEN = "7502031135:AAFiUxRD-N7sj4rGYBVCIadZsg0btLqRwLQ"
-CHAT_ID = "6360891094"
 
-
+SendKey = "SCT298095TMocelyoVHKr37C6TIe6zAExA"
 """
-向tg机器人发送消息
-:param text: 消息内容
+向微信服务号发内容
+:param text:
 :return:
 """
-url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-payload = {"chat_id": CHAT_ID, "text": "text"}
-requests.post(url, data=payload)
+url = f"https://sctapi.ftqq.com/{SendKey}.send"
+data = {"title": "text"}
+req = requests.post(url, data=data)
+print(req.text)
