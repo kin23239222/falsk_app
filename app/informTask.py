@@ -20,11 +20,24 @@ def check_tasks(app):
             if task.date_inform is not None:
                 task_time = tz.localize(task.date_inform) if task.date_inform.tzinfo is None else task.date_inform
                 if task_time <= now:
-                    # 通过tg机器人通知
-                    # send_tg_message(f"任务提醒：{task.name}")
-                    wy_mail_send(f"任务提醒：{task.name}")
-                    # 通过网易邮箱通知
-                    task.inform = True
+                    if task.type == 0:
+                        # 通过tg机器人通知
+                        # send_tg_message(f"任务提醒：{task.name}")
+                        wy_mail_send(f"任务提醒：{task.name}")
+                        # 通过网易邮箱通知
+                        task.inform = True
+                    elif task.type == 1:
+                        # 通过tg机器人通知
+                        # send_tg_message(f"待加入提醒：{task.name}")
+                        wy_mail_send(f"待加入提醒：{task.name}")
+                        # 通过网易邮箱通知
+                        task.inform = True
+                    else:
+                        # 通过tg机器人通知
+                        # send_tg_message(f"不明类型：{task.name}")
+                        wy_mail_send(f"不明类型：{task.name}")
+                        # 通过网易邮箱通知
+                        task.inform = True
         db.session.commit()
 
 

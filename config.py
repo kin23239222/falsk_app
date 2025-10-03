@@ -23,20 +23,7 @@ class Config:
     # SQLAlchemy 配置项，关闭对象修改追踪，节省内存
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# =========================================
-# 开发环境配置
-# =========================================
-class DevConfig(Config):
-    # 开启调试模式，代码修改会自动重载，报错会显示详细信息
-    DEBUG = True
 
-    # 数据库 URI（开发环境用 SQLite）
-    # 优先使用环境变量 DEV_DATABASE_URL，如果没有则用默认本地 SQLite 文件 dev.db
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DEV_DATABASE_URL", "mysql+pymysql://root:123456@localhost:3306/flask"
-    )
-
-    TEMPLATES_AUTO_RELOAD = True  # 开发环境模板自动刷新
 
 # =========================================
 # 生产环境配置
@@ -57,3 +44,18 @@ class ProdConfig(Config):
         'poolclass': NullPool,  # 禁用SQLAlchemy连接池，避免与Supabase冲突
         'pool_pre_ping': True,  # 连接前ping检测
     }
+
+# =========================================
+# 开发环境配置
+# =========================================
+class DevConfig(Config):
+    # 开启调试模式，代码修改会自动重载，报错会显示详细信息
+    DEBUG = True
+
+    # 数据库 URI（开发环境用 SQLite）
+    # 优先使用环境变量 DEV_DATABASE_URL，如果没有则用默认本地 SQLite 文件 dev.db
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DEV_DATABASE_URL", "mysql+pymysql://root:123456@localhost:3306/flask"
+    )
+
+    TEMPLATES_AUTO_RELOAD = True  # 开发环境模板自动刷新

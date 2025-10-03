@@ -36,7 +36,7 @@ def wy_mail_send(text: str, content="任务提醒"):
     # MIMEText：邮件正文，"plain" 表示纯文本，"utf-8" 保证中文不会乱码
     message = MIMEText(text, "plain", "utf-8")
     # 发件人信息（显示在邮件客户端中“发件人”字段）
-    message["From"] = formataddr(("任务提醒机器人", WY_mail_user))
+    message["From"] = formataddr(("提醒机器人", WY_mail_user))
     # 收件人信息（显示在邮件客户端中“收件人”字段）
     message["To"] = formataddr(("18476776602@163.com", "utf-8"))
     # 邮件标题
