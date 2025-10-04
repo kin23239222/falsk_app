@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
 
-import pytz
 
 from . import db  # 相对导入，获取在 __init__.py 中初始化的 SQLAlchemy 实例
-from sqlalchemy import Column, DateTime
 
 """
 作用：

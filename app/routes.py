@@ -1,10 +1,8 @@
-import gc
-import os
 from collections import defaultdict
-from .models import Task, db
+from .models import Task
+from . import db
 from flask import current_app as app  # 获取当前 app 实例
-import psutil
-from flask import  render_template, request, jsonify
+from flask import render_template, request, jsonify
 
 """
 作用：
