@@ -1,6 +1,6 @@
 from collections import defaultdict
 from .models import Task
-from . import db
+from .extensions import db
 from flask import current_app as app  # 获取当前 app 实例
 from flask import render_template, request, jsonify
 
@@ -14,15 +14,21 @@ from flask import render_template, request, jsonify
 可以引用 models.py 和 extensions.py。
 """
 
-# 获取 待执行 列表
 @app.route('/')
 def to_do_list():
+    """
+    获取 待执行 列表
+    :return:
+    """
     tasks = Task.query.filter(Task.done == False, Task.type == 0).all()
     return render_template("index.html", tasks=[t.to_dict() for t in tasks])
 
-# 获取 按日期分组 列表
 @app.route('/done')
 def done():
+    """
+    获取 按日期分组 列表
+    :return:
+    """
     tasks = Task.query.filter_by(done=True).order_by(Task.date).all()
     task_by_date = defaultdict(list)
     for i in tasks:
@@ -32,15 +38,21 @@ def done():
     tasks_by_date = dict(sorted(task_by_date.items()))
     return render_template('done.html', tasks_by_date=tasks_by_date)
 
-# 获取 待加入 列表
 @app.route('/wait')
 def wait():
+    """
+    获取 待加入 列表
+    :return:
+    """
     tasks = Task.query.filter(Task.done == False, Task.type == 1).all()
     return render_template("wait.html", tasks=[t.to_dict() for t in tasks])
 
-# 点击完成任务
 @app.route('/del_li', methods=['POST'])
 def del_li():
+    """
+    待执行 点击完成任务
+    :return:
+    """
     try:
         task = request.json.get('taskId')
         task_data = Task.query.get(task)
@@ -53,9 +65,12 @@ def del_li():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-# 点击完成任务
 @app.route('/join_list_task', methods=['POST'])
 def join_list_task():
+    """
+    待加入 点击完成任务
+    :return:
+    """
     try:
         task = request.json.get('taskId')
         task_data = Task.query.get(task)
@@ -68,9 +83,12 @@ def join_list_task():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-# 点击取消完成任务
 @app.route('/udel_li', methods=['POST'])
 def udel_li():
+    """
+    点击取消完成任务
+    :return:
+    """
     try:
         task = request.json.get('taskId')
         task_data = Task.query.get(task)
@@ -83,9 +101,12 @@ def udel_li():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-# 增加任务
 @app.route('/add_li', methods=['POST'])
 def add_li():
+    """
+    增加任务
+    :return:
+    """
     try:
         taskInput = request.json.get('taskInput')
         taskTime = request.json.get('taskTime')
@@ -107,9 +128,12 @@ def add_li():
         db.session.rollback()  # 新增错误回滚
         return jsonify({'status': 'error', 'message': '服务器错误'}), 500
 
-# 新增：健康检查端点（不影响现有功能）
 @app.route('/health')
 def health_check():
+    """
+    新增：健康检查端点（不影响现有功能）
+    :return:
+    """
     try:
         db.session.execute('SELECT 1')
         return 'OK'

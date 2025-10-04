@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-from . import db  # 相对导入，获取在 __init__.py 中初始化的 SQLAlchemy 实例
+from .extensions import db  # 相对导入，获取在 __init__.py 中初始化的 SQLAlchemy 实例
 
 """
 作用：

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from .models import Task
-from . import db
+from .extensions import db
 import pytz as pytz
 from .utiles import  wy_mail_send
 from apscheduler.schedulers.background import BackgroundScheduler
