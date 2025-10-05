@@ -32,7 +32,7 @@ class Task(db.Model):
     name = db.Column(db.String(250), nullable=False)
     # 任务状态：0未完成 1完成
     done = db.Column(db.Boolean, default=False)
-    # 任务类型：0待执行 1待加入
+    # 任务类型：0 任务待执行 1 任务待加入 2 购物待购买
     type = db.Column(db.Integer, default=0)
     # 通知任务：0未通知 1已通知
     inform = db.Column(db.Boolean, default=False)

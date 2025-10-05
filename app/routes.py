@@ -1,4 +1,7 @@
 from collections import defaultdict
+
+from sqlalchemy import select
+
 from .models import Task
 from .extensions import db
 from flask import current_app as app  # 获取当前 app 实例
@@ -17,7 +20,7 @@ from flask import render_template, request, jsonify
 @app.route('/')
 def to_do_list():
     """
-    获取 待执行 列表
+    获取 任务待执行 列表
     :return:
     """
     tasks = Task.query.filter(Task.done == False, Task.type == 0).all()
@@ -26,7 +29,8 @@ def to_do_list():
 @app.route('/done')
 def done():
     """
-    获取 按日期分组 列表
+    功能：获取 已完成 列表
+    实现：按日期分组
     :return:
     """
     tasks = Task.query.filter_by(done=True).order_by(Task.date).all()
@@ -41,11 +45,20 @@ def done():
 @app.route('/wait')
 def wait():
     """
-    获取 待加入 列表
+    获取 任务待加入 列表
     :return:
     """
     tasks = Task.query.filter(Task.done == False, Task.type == 1).all()
     return render_template("wait.html", tasks=[t.to_dict() for t in tasks])
+@app.route('/shopping')
+def shopping():
+    """
+    获取 购物待购买
+    :return:
+    """
+    tasks = select(Task).where(Task.done == False, Task.type == 2)
+    result = db.session.execute(tasks).scalars().all()
+    return render_template("shopping.html",tasks=[t.to_dict() for t in result])
 
 @app.route('/del_li', methods=['POST'])
 def del_li():

@@ -39,11 +39,15 @@
         <ul class="nav nav-pills justify-content-center">
             <li class="nav-item">
                 <a class="nav-link {% if request.endpoint == 'to_do_list' %} active {% endif %}" aria-current="page"
-                   href="{{ url_for('to_do_list') }}">待执行</a>
+                   href="{{ url_for('to_do_list') }}">任务待执行</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.endpoint == 'wait' %} active {% endif %}" aria-current="page"
-                   href="{{ url_for('wait') }}">待加入</a>
+                   href="{{ url_for('wait') }}">任务待加入</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'shopping' %} active {% endif %}" aria-current="page"
+                   href="{{ url_for('shopping') }}">购物待购买</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link  {% if request.endpoint == 'done' %}active{% endif %}" href="{{ url_for('done') }}">已完成</a>
