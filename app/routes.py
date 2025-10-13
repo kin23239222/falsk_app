@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from sqlalchemy import select
-
 from .models import Task
 from .extensions import db
 from flask import current_app as app  # 获取当前 app 实例
@@ -16,7 +15,6 @@ from flask import render_template, request, jsonify
 只关注业务逻辑，不处理数据库连接初始化。
 可以引用 models.py 和 extensions.py。
 """
-
 @app.route('/')
 def to_do_list():
     """
