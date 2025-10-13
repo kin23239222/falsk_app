@@ -27,8 +27,17 @@ def create_app(config_name="DevConfig"):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # 导入路由和模型
+    # 注册路由和蓝图
     with app.app_context():
         from . import routes, models
+
+        # 假设 routes.py 中有 blueprint = Blueprint('task', __name__)
+        # 如果没有蓝图，可以直接使用 app.route，这里可以加 url_prefix
+        # 如果你想统一用 /task/ 前缀，可以用蓝图
+        try:
+            from .routes import task_blueprint
+            app.register_blueprint(task_blueprint, url_prefix='/task')
+        except ImportError:
+            pass
 
     return app
