@@ -3,7 +3,7 @@ from collections import defaultdict
 from sqlalchemy import select
 from .models import Task
 from .extensions import db
-from flask import current_app as app  # 获取当前 app 实例
+from flask import current_app as app, Blueprint  # 获取当前 app 实例
 from flask import render_template, request, jsonify
 
 """
@@ -15,7 +15,11 @@ from flask import render_template, request, jsonify
 只关注业务逻辑，不处理数据库连接初始化。
 可以引用 models.py 和 extensions.py。
 """
-@app.route('/')
+
+task_blueprint = Blueprint('task', __name__)
+
+
+@task_blueprint.route('/')
 def to_do_list():
     """
     获取 任务待执行 列表
@@ -24,7 +28,7 @@ def to_do_list():
     tasks = Task.query.filter(Task.done == False, Task.type == 0).all()
     return render_template("index.html", tasks=[t.to_dict() for t in tasks])
 
-@app.route('/done')
+@task_blueprint.route('/done')
 def done():
     """
     功能：获取 已完成 列表
@@ -40,7 +44,7 @@ def done():
     tasks_by_date = dict(sorted(task_by_date.items()))
     return render_template('done.html', tasks_by_date=tasks_by_date)
 
-@app.route('/wait')
+@task_blueprint.route('/wait')
 def wait():
     """
     获取 任务待加入 列表
@@ -48,7 +52,7 @@ def wait():
     """
     tasks = Task.query.filter(Task.done == False, Task.type == 1).all()
     return render_template("wait.html", tasks=[t.to_dict() for t in tasks])
-@app.route('/shopping')
+@task_blueprint.route('/shopping')
 def shopping():
     """
     获取 购物待购买
@@ -58,7 +62,7 @@ def shopping():
     result = db.session.execute(tasks).scalars().all()
     return render_template("shopping.html",tasks=[t.to_dict() for t in result])
 
-@app.route('/del_li', methods=['POST'])
+@task_blueprint.route('/del_li', methods=['POST'])
 def del_li():
     """
     待执行 点击完成任务
@@ -76,7 +80,7 @@ def del_li():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-@app.route('/join_list_task', methods=['POST'])
+@task_blueprint.route('/join_list_task', methods=['POST'])
 def join_list_task():
     """
     待加入 点击完成任务
@@ -94,7 +98,7 @@ def join_list_task():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-@app.route('/udel_li', methods=['POST'])
+@task_blueprint.route('/udel_li', methods=['POST'])
 def udel_li():
     """
     点击取消完成任务
@@ -112,7 +116,7 @@ def udel_li():
         db.session.rollback()  # 新增错误回滚
         return {'status': 'error', 'message': '服务器错误'}, 500
 
-@app.route('/add_li', methods=['POST'])
+@task_blueprint.route('/add_li', methods=['POST'])
 def add_li():
     """
     增加任务
@@ -139,7 +143,7 @@ def add_li():
         db.session.rollback()  # 新增错误回滚
         return jsonify({'status': 'error', 'message': '服务器错误'}), 500
 
-@app.route('/health')
+@task_blueprint.route('/health')
 def health_check():
     """
     新增：健康检查端点（不影响现有功能）
