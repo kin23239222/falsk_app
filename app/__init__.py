@@ -17,7 +17,10 @@ from .extensions import db, migrate
 
 
 def create_app(config_name="DevConfig"):
-    app = Flask(__name__)
+    app = Flask(__name__,
+               static_url_path='/task/static',   # 静态文件访问 URL 前缀
+        static_folder=os.path.join(os.path.dirname(__file__), 'static')
+               )
 
     # 选择环境配置
     app.config.from_object(f"config.{config_name}")
