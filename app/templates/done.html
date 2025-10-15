@@ -56,7 +56,7 @@
     <script>
         function done_true(done) {
             let task = done.value;
-            fetch('/udel_li', {
+            fetch('/task/udel_li', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({taskId: task})

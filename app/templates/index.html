@@ -92,7 +92,7 @@
         // 完成任务
         function del(checkbox) {
             let task = checkbox.value;
-            fetch('/del_li', {
+            fetch('/task/del_li', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({taskId: task})
@@ -120,7 +120,7 @@
                 return
             }
 
-            fetch('/add_li', {
+            fetch('/task/add_li', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({taskInput: taskInput, taskTime: taskTime, taskType:0})
